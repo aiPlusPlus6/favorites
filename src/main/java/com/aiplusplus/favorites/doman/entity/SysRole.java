@@ -1,5 +1,6 @@
 package com.aiplusplus.favorites.doman.entity;
 
+import com.aiplusplus.favorites.doman.entity.base.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -12,7 +13,7 @@ import lombok.Data;
  */
 @Data
 @Schema(name = "系统角色实体类")
-public class SysRole extends BaseEntity{
+public class SysRole extends BaseEntity {
     @Schema(name = "角色名称")
     private String roleName;
     @Schema(name = "显示顺序")
