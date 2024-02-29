@@ -1,13 +1,16 @@
 package com.aiplusplus.favorites.unit;
 
-import com.ejlchina.okhttps.OkHttps;
+
 import eu.bitwalker.useragentutils.UserAgent;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.net.InetAddress;
+import java.util.Map;
 
 /**
  * @author 李俊杰
@@ -134,11 +137,19 @@ public class IpUtil {
                 return "局域网（未知来源）";
             }
             // 请求
-            String url = "http://whois.pconline.com.cn/ipJson.jsp?json=true&ip=" + ip;
-            String body = OkHttps.sync(url).get().getBody().toString();
-            SoMap so = SoMap.getSoMap().setJsonString(body);
-            logger.info("IP地址详情信息 = " + so);
-            String addr = so.getString("addr");
+            // 构建URL
+            String url = UriComponentsBuilder.fromHttpUrl("http://whois.pconline.com.cn/ipJson.jsp")
+                    .queryParam("json", "true")
+                    .queryParam("ip", ip)
+                    .toUriString();
+            // 创建RestTemplate实例
+            RestTemplate restTemplate = new RestTemplate();
+            // 发送GET请求，并接收结果为Map
+            Map<String, Object> response = restTemplate.getForObject(url, Map.class);
+            if(response == null){
+                return "未知地址";
+            }
+            String addr = (String) response.get("addr");
             if (addr == null) {
                 return "未知地址";
             }

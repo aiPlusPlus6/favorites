@@ -100,12 +100,6 @@
             <artifactId>UserAgentUtils</artifactId>
             <version>1.21</version>
         </dependency>
-        <!-- OkHttps网络请求库： http://okhttps.ejlchina.com/ -->
-        <dependency>
-            <groupId>com.ejlchina</groupId>
-            <artifactId>okhttps</artifactId>
-            <version>3.2.0</version>
-        </dependency>
 <!--        com.alibaba.fastjson.JSON;-->
         <dependency>
             <groupId>com.alibaba</groupId>
