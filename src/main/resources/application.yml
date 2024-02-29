@@ -1,0 +1,59 @@
+server:
+  port: 521
+  max-http-request-header-size: 10240
+spring:
+  profiles:
+    active: dev
+  application:
+    name: aiplusplus-favorites
+  datasource:
+    username: root
+    password: 1234
+    url: jdbc:mysql://127.0.0.1:3306/favorites?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8&allowMultiQueries=true&allowPublicKeyRetrieval=true
+  data:
+    redis:
+      host: 192.168.1.200
+      password:
+      port: 6379
+      jedis:
+        pool:
+          max-idle: 100
+          min-idle: 0
+          max-active: 1000
+          max-wait: -1
+      timeout: 500000
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+security:
+  ignoredPaths:
+    - /api/login
+    - /api/register
+    - /test/test
+    - /swagger/**
+    - /swagger-ui/**
+logging:
+  level:
+    com.baomidou.mybatisplus: DEBUG
+    com.aiplusplus.favorites.mapper: DEBUG
+
+springdoc:
+  api-docs:
+    title: favorites项目
+    description: 521
+    version: openapi_3_1
+    contact:
+      name: aiplusplus
+      email: 948368584@qq.com
+    enabled: true
+    path: /swagger
+  swagger-ui:
+    path: /swagger
+
+

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aiplusplus.favorites.mapper.UserMapper">
+    <resultMap id="selectSecurityUserListMap" type="com.aiplusplus.favorites.doman.entity.SysUser">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="user_name" property="userName" />
+        <result column="password" property="password" />
+        <result column="phone" property="phone" />
+        <result column="gender" property="gender"/>
+        <result column="avatar" property="avatar"/>
+        <result column="create_by" property="createBy" />
+        <result column="create_date" property="createDate" />
+        <result column="update_by" property="updateBy" />
+        <result column="update_date" property="updateDate" />
+        <result column="status" property="status" />
+        <result column="version" property="version"/>
+        <result column="deleted" property="deleted"/>
+        <association property="role" javaType="com.aiplusplus.favorites.doman.entity.SysRole">
+            <result column="role_sort" property="roleSort" />
+            <result column="role_name" property="roleName" />
+            <result column="data_scope" property="dataScope" />
+            <result column="status" property="status" />
+        </association>
+    </resultMap>
+
+    <select id="selectSecurityUser" resultMap="selectSecurityUserListMap">
+        select su.id,
+               su.user_name,
+               su.password,
+               su.phone,
+               su.gender,
+               su.avatar,
+               su.create_by,
+               su.create_date,
+               su.update_by,
+               su.update_date,
+               su.status,
+               su.version,
+               su.deleted,
+               sr.role_name,
+               sr.role_sort,
+               sr.data_scope,
+               sr.status
+        from sys_user su
+                 join sys_user_role sur on su.id = sur.user_id
+                 join sys_role sr on sur.role_id = sr.id
+        where su.deleted = 0
+          and sr.deleted = 0
+          and su.user_name = #{userName}
+    </select>
+</mapper>
