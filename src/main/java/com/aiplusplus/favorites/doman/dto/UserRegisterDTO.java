@@ -1,8 +1,10 @@
 package com.aiplusplus.favorites.doman.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.NotBlank;
+
 
 
 /**
@@ -24,7 +26,7 @@ public class UserRegisterDTO {
     @NotBlank(message = "手机号码不能为空")
     private String phone;
     @Schema(name = "性别")
-    @NotBlank(message = "性别不能为空")
+    @NotNull(message = "性别不能为空")
     private Integer gender;
     @Schema(name = "头像存储地址")
     @NotBlank(message = "头像不能为空")

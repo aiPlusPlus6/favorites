@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aiplusplus.favorites.mapper.RoleMapper">
+    <select id="selectMaxRoleSort" resultType="java.lang.Integer">
+        SELECT ifnull(MIN(t.row_num),1) AS first_missing_number
+        FROM (
+        SELECT
+        @row_num := @row_num + 1 AS row_num,
+        role_sort
+        FROM
+        sys_role,
+        (SELECT @row_num := 0) r
+        ORDER BY role_sort
+        ) t
+        WHERE t.row_num != t.role_sort
+    </select>
+</mapper>

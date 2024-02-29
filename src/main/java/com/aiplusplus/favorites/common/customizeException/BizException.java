@@ -40,6 +40,7 @@ public class BizException extends RuntimeException{
 
     public BizException(String errorMsg) {
         super(errorMsg);
+        this.errorCode = "1001";
         this.errorMsg = errorMsg;
     }
 

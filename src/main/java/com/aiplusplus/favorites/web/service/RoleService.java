@@ -1,5 +1,6 @@
 package com.aiplusplus.favorites.web.service;
 
+import com.aiplusplus.favorites.doman.dto.RoleAddDTO;
 import com.aiplusplus.favorites.doman.entity.SysRole;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -11,4 +12,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @Description: TODO(描述)
  */
 public interface RoleService extends IService<SysRole> {
+    String addRole(RoleAddDTO roleAddDTO);
+
+    void deleteRole(String roleId, Integer version);
 }
