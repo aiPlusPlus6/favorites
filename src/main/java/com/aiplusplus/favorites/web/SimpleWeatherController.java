@@ -29,4 +29,5 @@ public class SimpleWeatherController {
         simpleWeatherService.pullCityList();
         return R.ok("拉取成功");
     }
+
 }
