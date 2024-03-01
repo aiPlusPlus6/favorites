@@ -1,6 +1,7 @@
 package com.aiplusplus.favorites.unit;
 
 
+import com.aiplusplus.favorites.common.customizeException.BizException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.lionsoul.ip2region.xdb.Searcher;
@@ -33,10 +34,16 @@ public class IpUtil {
 
     public static String getIPRegion(HttpServletRequest request) {
         String ip = getIPAddress(request);
+        //校验ip是否是v6
+        if (ip !=null){
+            if (ip.contains(":")){
+                return "未知ip";
+            }
+        }
         Searcher searcher = searcherThreadLocal.get();
         if (searcher == null) {
             log.error("IP 归属地查询失败，返回空");
-            return null;
+            return "未知ip";
         }
         try {
             long startTime = System.nanoTime();
@@ -46,7 +53,7 @@ public class IpUtil {
             return region;
         } catch (Exception e) {
             log.error("IP: {} 获取 IP 归属地错误，错误原因: {}", ip, e.getMessage());
-            return null;
+            return "未知ip";
         } finally {
             closeSearcher();
         }

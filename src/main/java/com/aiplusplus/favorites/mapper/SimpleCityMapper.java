@@ -3,6 +3,7 @@ package com.aiplusplus.favorites.mapper;
 import com.aiplusplus.favorites.doman.entity.simple.SimpleCity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @author 李俊杰
@@ -13,4 +14,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface SimpleCityMapper extends BaseMapper<SimpleCity> {
+    SimpleCity getIpOne(@Param("province") String province, @Param("city") String city);
 }

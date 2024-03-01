@@ -3,11 +3,9 @@ package com.aiplusplus.favorites.web;
 import com.aiplusplus.favorites.common.R;
 import com.aiplusplus.favorites.web.service.SimpleWeatherService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author 李俊杰
@@ -28,6 +26,12 @@ public class SimpleWeatherController {
     public R<String> pullCityList() {
         simpleWeatherService.pullCityList();
         return R.ok("拉取成功");
+    }
+
+    //获取天气
+    @GetMapping("/getWeather")
+    public R<Object> getWeather(HttpServletRequest request, @RequestParam(required = false) Integer cityId) {
+        return R.ok(simpleWeatherService.getWeather(request,cityId));
     }
 
 }
