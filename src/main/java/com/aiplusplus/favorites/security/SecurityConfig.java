@@ -2,13 +2,13 @@ package com.aiplusplus.favorites.security;
 
 
 
+import com.aiplusplus.favorites.common.prefix.SecurityProperties;
 import com.aiplusplus.favorites.security.jwt.JwtFilter;
 
 import com.aiplusplus.favorites.security.login.CustomAccessDeniedHandler;
 import com.aiplusplus.favorites.security.login.CustomAuthenticationEntryPoint;
 import com.aiplusplus.favorites.web.service.UserService;
 import jakarta.annotation.Resource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

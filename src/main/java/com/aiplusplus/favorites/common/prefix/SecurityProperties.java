@@ -1,4 +1,4 @@
-package com.aiplusplus.favorites.security;
+package com.aiplusplus.favorites.common.prefix;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

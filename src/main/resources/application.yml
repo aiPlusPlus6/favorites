@@ -55,10 +55,10 @@ springdoc:
     path: /swagger
   swagger-ui:
     path: /swagger
-simpleWeather:
+simpleweather:
   query: http://apis.juhe.cn/simpleWeather/query #根据城市查询天气
   life: http://apis.juhe.cn/simpleWeather/life #根据城市查询生活指数
   wids: http://apis.juhe.cn/simpleWeather/wids #天气种类列表
-  cityList: http://apis.juhe.cn/simpleWeather/cityList #支持城市列表
-  apiKey: b7a8307ec04efa628ad3dfad7fa28ad6 #apiKey
+  citylist: http://apis.juhe.cn/simpleWeather/cityList #支持城市列表
+
 

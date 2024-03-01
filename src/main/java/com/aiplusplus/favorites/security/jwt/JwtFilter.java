@@ -1,7 +1,7 @@
 package com.aiplusplus.favorites.security.jwt;
 
 import com.aiplusplus.favorites.common.customizeException.BizException;
-import com.aiplusplus.favorites.security.SecurityProperties;
+import com.aiplusplus.favorites.common.prefix.SecurityProperties;
 import com.aiplusplus.favorites.web.service.UserService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;

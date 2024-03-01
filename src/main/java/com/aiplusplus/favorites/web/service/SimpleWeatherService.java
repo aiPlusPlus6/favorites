@@ -8,4 +8,5 @@ package com.aiplusplus.favorites.web.service;
  * @Description: TODO(描述)
  */
 public interface SimpleWeatherService {
+    public void pullCityList();
 }
