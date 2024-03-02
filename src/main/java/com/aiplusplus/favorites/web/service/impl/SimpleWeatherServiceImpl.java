@@ -4,11 +4,13 @@ import com.aiplusplus.favorites.common.customizeException.BizException;
 import com.aiplusplus.favorites.common.prefix.SimpleWeatherPrefix;
 import com.aiplusplus.favorites.doman.dto.simple.SimpleCityReceiveDTO;
 import com.aiplusplus.favorites.doman.entity.simple.SimpleCity;
+import com.aiplusplus.favorites.doman.entity.simple.SimpleWid;
 import com.aiplusplus.favorites.mapper.SimpleCityMapper;
 import com.aiplusplus.favorites.unit.HttpUtil;
 import com.aiplusplus.favorites.unit.IpUtil;
 import com.aiplusplus.favorites.web.service.SimpleCityService;
 import com.aiplusplus.favorites.web.service.SimpleWeatherService;
+import com.aiplusplus.favorites.web.service.SimpleWidService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,6 +40,7 @@ public class SimpleWeatherServiceImpl implements SimpleWeatherService {
     private final SimpleCityService simpleCityService;
     private final SimpleWeatherPrefix simpleWeatherPrefix;
     private final SimpleCityMapper simpleCityMapper;
+    private final SimpleWidService simpleWidService;
 
     //定时拉取城市列表每天凌晨0点
     @Scheduled(cron = "0 0 0 * * ?")
@@ -97,6 +100,54 @@ public class SimpleWeatherServiceImpl implements SimpleWeatherService {
     }
 
     @Override
+    @Scheduled(cron = "0 0 0 * * ?")
+    @Transactional(rollbackFor = Exception.class)
+    public void pullWeatherTypeList() {
+        Map<String, String> mapParam = new HashMap<>();
+        mapParam.put("key", simpleWeatherPrefix.getApikey());
+        List<SimpleWid> result = HttpUtil.getClassList(simpleWeatherPrefix.getWids(), mapParam, null, new TypeReference<List<SimpleWid>>() {
+        }, "result");
+        List<SimpleWid> list = simpleWidService.list();
+        Map<String,SimpleWid> simpleWidMap = list.stream().collect(Collectors.toMap(SimpleWid::getWid, Function.identity()));
+        List<SimpleWid> simpleWidAdd = new ArrayList<>();
+        List<SimpleWid> simpleWidUpdate = new ArrayList<>();
+        Set<String> strings = simpleWidMap.keySet();
+        for (SimpleWid datum : result) {
+            SimpleWid simpleWid = simpleWidMap.get(datum.getWid());
+            if (simpleWid == null) {
+                datum.setDeleted(0);
+                simpleWidAdd.add(datum);
+            } else {
+                strings.remove(datum.getWid());
+                simpleWid.setWid(datum.getWid());
+                simpleWid.setWeather(datum.getWeather());
+                simpleWidAdd.add(simpleWid);
+            }
+        }
+        if (!strings.isEmpty()) {
+            boolean b = simpleWidService.remove(new LambdaQueryWrapper<SimpleWid>().in(SimpleWid::getWid, strings));
+            if (!b) {
+                log.error("删除天气类型失败");
+                throw new BizException("删除天气类型失败");
+            }
+        }
+        if (!simpleWidAdd.isEmpty()) {
+            boolean b = simpleWidService.saveBatch(simpleWidAdd);
+            if (!b) {
+                log.error("新增天气类型失败");
+                throw new BizException("新增天气类型失败");
+            }
+        }
+        if (!simpleWidUpdate.isEmpty()) {
+            boolean b = simpleWidService.updateBatchById(simpleWidUpdate);
+            if (!b) {
+                log.error("更新天气类型失败");
+                throw new BizException("更新天气类型失败");
+            }
+        }
+    }
+
+    @Override
     public Object getWeather(HttpServletRequest request, Integer cityId) {
         if (cityId != null) {
             SimpleCity one = simpleCityService.getOne(new LambdaQueryWrapper<SimpleCity>().eq(SimpleCity::getSimpleCityId, cityId));
@@ -120,4 +171,6 @@ public class SimpleWeatherServiceImpl implements SimpleWeatherService {
         Map<String, Object> mapObject = HttpUtil.getMapObject(simpleWeatherPrefix.getQuery(), mapParam, null);
         return mapObject.get("result");
     }
+
+
 }

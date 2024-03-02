@@ -27,7 +27,12 @@ public class SimpleWeatherController {
         simpleWeatherService.pullCityList();
         return R.ok("拉取成功");
     }
-
+    //拉取天气种类列表
+    @GetMapping("/pullWeatherTypeList")
+    public R<String> pullWeatherTypeList() {
+        simpleWeatherService.pullWeatherTypeList();
+        return R.ok("拉取成功");
+    }
     //获取天气
     @GetMapping("/getWeather")
     public R<Object> getWeather(HttpServletRequest request, @RequestParam(required = false) Integer cityId) {

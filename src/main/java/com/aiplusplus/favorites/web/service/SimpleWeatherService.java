@@ -13,4 +13,7 @@ public interface SimpleWeatherService {
     public void pullCityList();
 
     Object getWeather(HttpServletRequest request, Integer cityId);
+
+    void pullWeatherTypeList();
+
 }

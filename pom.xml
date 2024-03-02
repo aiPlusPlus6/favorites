@@ -137,6 +137,7 @@
             <artifactId>hibernate-validator</artifactId>
             <version>7.0.1.Final</version>
         </dependency>
+<!--        ip获取地址-->
         <dependency>
             <groupId>com.jthinking.common</groupId>
             <artifactId>ip-info</artifactId>
