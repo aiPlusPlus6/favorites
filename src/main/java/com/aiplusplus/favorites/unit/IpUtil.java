@@ -2,6 +2,8 @@ package com.aiplusplus.favorites.unit;
 
 
 import com.aiplusplus.favorites.common.customizeException.BizException;
+import com.jthinking.common.util.ip.IPInfo;
+import com.jthinking.common.util.ip.IPInfoUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.lionsoul.ip2region.xdb.Searcher;
@@ -9,6 +11,8 @@ import org.lionsoul.ip2region.xdb.Searcher;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author 李俊杰
@@ -20,47 +24,20 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class IpUtil {
 
-    private static final String DB_PATH = "src/main/resources/ip2region.xdb";
-
-    private static final ThreadLocal<Searcher> searcherThreadLocal = ThreadLocal.withInitial(() -> {
-        try {
-            return Searcher.newWithFileOnly(DB_PATH);
-        } catch (Exception e) {
-            log.error("初始化 IP 归属地查询失败: {}", e.getMessage());
+    public static String[] getIPRegion(HttpServletRequest request) {
+        String ip = getIPAddress(request);
+        log.info("ip:{}", ip);
+        IPInfo ipInfo = IPInfoUtils.getIpInfo(ip);
+        String address = ipInfo.getAddress();
+        String[] strings = parseAddress(address);
+        if(strings==null||strings.length<2){
             return null;
         }
-    });
-
-
-    public static String getIPRegion(HttpServletRequest request) {
-        String ip = getIPAddress(request);
-        //校验ip是否是v6
-        if (ip !=null){
-            if (ip.contains(":")){
-                return "未知ip";
-            }
-        }
-        Searcher searcher = searcherThreadLocal.get();
-        if (searcher == null) {
-            log.error("IP 归属地查询失败，返回空");
-            return "未知ip";
-        }
-        try {
-            long startTime = System.nanoTime();
-            String region = searcher.search(ip);
-            long cost = TimeUnit.NANOSECONDS.toMicros(System.nanoTime() - startTime);
-            log.info("IP: {}, Region: {}, IO Count: {}, Took: {} μs", ip, region, searcher.getIOCount(), cost);
-            return region;
-        } catch (Exception e) {
-            log.error("IP: {} 获取 IP 归属地错误，错误原因: {}", ip, e.getMessage());
-            return "未知ip";
-        } finally {
-            closeSearcher();
-        }
+        return strings;
     }
 
 
-    private static String getIPAddress(HttpServletRequest request) {
+    public static String getIPAddress(HttpServletRequest request) {
         String ipAddress = request.getHeader("X-Forwarded-For");
         if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getHeader("Proxy-Client-IP");
@@ -80,15 +57,18 @@ public class IpUtil {
         return ipAddress;
     }
 
-    public static void closeSearcher() {
-        try {
-            Searcher searcher = searcherThreadLocal.get();
-            if (Objects.nonNull(searcher)) {
-                searcher.close();
-                searcherThreadLocal.remove();
-            }
-        } catch (Exception e) {
-            log.error("关闭异常", e);
+    public static String[] parseAddress(String address) {
+        // 定义正则表达式，用于匹配省、市、区
+        String regex = "([^省]+省|[^自治区]+自治区|[^市]+市)([^市]+市|[^自治州]+自治州|[^地区]+地区|[^盟]+盟)?([^县]+县|[^区]+区|[^市]+市|[^旗]+旗)?";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(address);
+
+        if (matcher.find()) {
+            String province = matcher.group(1); // 省
+            String city = matcher.group(2); // 市
+            String district = matcher.group(3); // 区
+            return new String[]{province, city, district};
         }
+        return null; // 如果未匹配到，则返回null
     }
 }

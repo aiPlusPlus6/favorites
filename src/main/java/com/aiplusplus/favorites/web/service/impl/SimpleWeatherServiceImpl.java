@@ -104,16 +104,12 @@ public class SimpleWeatherServiceImpl implements SimpleWeatherService {
                 throw new BizException("1002", "不支持该城市");
             }
         }
-        String ipRegion = IpUtil.getIPRegion(request);
-        if (ipRegion == null) {
-            throw new BizException("获取IP失败,请联系管理员");
+        String[] ipRegion = IpUtil.getIPRegion(request);
+        if(ipRegion==null){
+            throw new BizException("1002", "不支持该ip归属城市");
         }
-        String[] split = ipRegion.split("\\|");
-        if (split.length < 4) {
-            throw new BizException("1003", "未知ip归属地");
-        }
-        String province = split[2];
-        String city = split[3];
+        String province = ipRegion[0];
+        String city = ipRegion[1];
         SimpleCity simpleCity = simpleCityMapper.getIpOne(province, city);
         if (simpleCity == null) {
             throw new BizException("1002", "不支持该ip归属城市");
