@@ -1,5 +1,6 @@
 package com.aiplusplus.favorites.web.service;
 
+import com.aiplusplus.favorites.doman.dto.simple.weather.WeatherDTO;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
@@ -12,7 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 public interface SimpleWeatherService {
     public void pullCityList();
 
-    Object getWeather(HttpServletRequest request, Integer cityId);
+    WeatherDTO getWeather(HttpServletRequest request, Integer cityId);
 
     void pullWeatherTypeList();
 

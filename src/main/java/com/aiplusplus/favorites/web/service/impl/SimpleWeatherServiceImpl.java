@@ -3,6 +3,9 @@ package com.aiplusplus.favorites.web.service.impl;
 import com.aiplusplus.favorites.common.customizeException.BizException;
 import com.aiplusplus.favorites.common.prefix.SimpleWeatherPrefix;
 import com.aiplusplus.favorites.doman.dto.simple.SimpleCityReceiveDTO;
+import com.aiplusplus.favorites.doman.dto.simple.weather.FutureDTO;
+import com.aiplusplus.favorites.doman.dto.simple.weather.WeatherDTO;
+import com.aiplusplus.favorites.doman.dto.simple.weather.WidBean;
 import com.aiplusplus.favorites.doman.entity.simple.SimpleCity;
 import com.aiplusplus.favorites.doman.entity.simple.SimpleWid;
 import com.aiplusplus.favorites.mapper.SimpleCityMapper;
@@ -148,7 +151,7 @@ public class SimpleWeatherServiceImpl implements SimpleWeatherService {
     }
 
     @Override
-    public Object getWeather(HttpServletRequest request, Integer cityId) {
+    public WeatherDTO getWeather(HttpServletRequest request, Integer cityId) {
         if (cityId != null) {
             SimpleCity one = simpleCityService.getOne(new LambdaQueryWrapper<SimpleCity>().eq(SimpleCity::getSimpleCityId, cityId));
             if (one == null) {
@@ -167,10 +170,17 @@ public class SimpleWeatherServiceImpl implements SimpleWeatherService {
         }
         Map<String, String> mapParam = new HashMap<>();
         mapParam.put("key", simpleWeatherPrefix.getApikey());
-        mapParam.put("city", String.valueOf(simpleCity.getSimpleCityId()));
-        Map<String, Object> mapObject = HttpUtil.getMapObject(simpleWeatherPrefix.getQuery(), mapParam, null);
-        return mapObject.get("result");
+        mapParam.put("city", String.valueOf(cityId!=null?cityId:simpleCity.getSimpleCityId()));
+        WeatherDTO result = HttpUtil.getClassList(simpleWeatherPrefix.getQuery(), mapParam, null, new TypeReference<WeatherDTO>() {
+        }, "result");
+        List<FutureDTO> future = result.getFuture();
+        List<SimpleWid> list = simpleWidService.list();
+        Map<String, SimpleWid> simpleWidMap = list.stream().collect(Collectors.toMap(SimpleWid::getWid, Function.identity()));
+        for (FutureDTO futureDTO : future) {
+            WidBean wid = futureDTO.getWid();
+            wid.setDayWeather(simpleWidMap.get(wid.getDay()).getWeather());
+            wid.setNightWeather(simpleWidMap.get(wid.getNight()).getWeather());
+        }
+        return result;
     }
-
-
 }

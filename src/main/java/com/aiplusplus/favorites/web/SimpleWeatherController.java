@@ -1,6 +1,7 @@
 package com.aiplusplus.favorites.web;
 
 import com.aiplusplus.favorites.common.R;
+import com.aiplusplus.favorites.doman.dto.simple.weather.WeatherDTO;
 import com.aiplusplus.favorites.web.service.SimpleWeatherService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,7 +36,7 @@ public class SimpleWeatherController {
     }
     //获取天气
     @GetMapping("/getWeather")
-    public R<Object> getWeather(HttpServletRequest request, @RequestParam(required = false) Integer cityId) {
+    public R<WeatherDTO> getWeather(HttpServletRequest request, @RequestParam(required = false) Integer cityId) {
         return R.ok(simpleWeatherService.getWeather(request,cityId));
     }
 
