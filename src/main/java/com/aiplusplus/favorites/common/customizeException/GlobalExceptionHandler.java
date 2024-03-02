@@ -4,6 +4,8 @@ import com.aiplusplus.favorites.common.R;
 import com.aiplusplus.favorites.common.customizeException.InfoInterface.ExceptionEnum;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -56,7 +58,29 @@ public class GlobalExceptionHandler {
         log.error("未知异常！请联系李俊杰,原因是:",e);
         return R.error(ExceptionEnum.INTERNAL_SERVER_ERROR);
     }
+    /**
+     * 处理登录异常
+     * @param req 请求
+     * @param e 异常
+     * @return
+     */
+    @ExceptionHandler(value =AuthenticationServiceException.class)
+    public R<String> exceptionHandler(HttpServletRequest req, AuthenticationServiceException e){
+        log.error("未知异常！请联系李俊杰,原因是:",e);
+        return R.error(e.getMessage());
+    }
 
+    /**
+     * 处理登录异常
+     * @param req 请求
+     * @param e 异常
+     * @return
+     */
+    @ExceptionHandler(value =BadCredentialsException.class)
+    public R<String> exceptionHandler(HttpServletRequest req, BadCredentialsException e){
+        log.error("未知异常！请联系李俊杰,原因是:",e);
+        return R.error("密码错误");
+    }
     /**
      * 处理参数校验异常
      * @param req 请求
