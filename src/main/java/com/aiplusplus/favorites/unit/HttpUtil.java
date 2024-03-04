@@ -55,6 +55,9 @@ public class HttpUtil {
      */
     public static <T> T getClass(String url, Map<String,String> paramMap,Map<String,String> pathMap,Class<T> clazz,String data){
         Map<String, Object> mapObject = getMapObject(url, paramMap, pathMap);
+        if (data == null){
+            return objectMapper.convertValue(mapObject,clazz);
+        }
         Map<String, Object> o = (Map<String, Object>) mapObject.get(data);
         return objectMapper.convertValue(o,clazz);
     }

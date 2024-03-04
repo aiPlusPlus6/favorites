@@ -44,6 +44,7 @@ public class SimpleWeatherServiceImpl implements SimpleWeatherService {
     private final SimpleWeatherPrefix simpleWeatherPrefix;
     private final SimpleCityMapper simpleCityMapper;
     private final SimpleWidService simpleWidService;
+    private final IpUtil ipUtil;
 
     //定时拉取城市列表每天凌晨0点
     @Scheduled(cron = "0 0 0 * * ?")
@@ -158,16 +159,7 @@ public class SimpleWeatherServiceImpl implements SimpleWeatherService {
                 throw new BizException("1002", "不支持该城市");
             }
         }
-        String[] ipRegion = IpUtil.getIPRegion(request);
-        if(ipRegion==null){
-            throw new BizException("1002", "不支持该ip归属城市");
-        }
-        String province = ipRegion[0];
-        String city = ipRegion[1];
-        SimpleCity simpleCity = simpleCityMapper.getIpOne(province, city);
-        if (simpleCity == null) {
-            throw new BizException("1002", "不支持该ip归属城市");
-        }
+        SimpleCity simpleCity = getCity(request);
         Map<String, String> mapParam = new HashMap<>();
         mapParam.put("key", simpleWeatherPrefix.getApikey());
         mapParam.put("city", String.valueOf(cityId!=null?cityId:simpleCity.getSimpleCityId()));
@@ -183,4 +175,29 @@ public class SimpleWeatherServiceImpl implements SimpleWeatherService {
         }
         return result;
     }
+
+    @Override
+    public Object getLifeIndex(HttpServletRequest request, Integer cityId) {
+        if (cityId != null) {
+            SimpleCity one = simpleCityService.getOne(new LambdaQueryWrapper<SimpleCity>().eq(SimpleCity::getSimpleCityId, cityId));
+            if (one == null) {
+                throw new BizException("1002", "不支持该城市");
+            }
+        }
+        SimpleCity simpleCity = getCity(request);
+        Map<String, String> mapParam = new HashMap<>();
+        mapParam.put("key", simpleWeatherPrefix.getApikey());
+        mapParam.put("city", String.valueOf(cityId!=null?cityId:simpleCity.getSimpleCityId()));
+        return HttpUtil.getMapObject(simpleWeatherPrefix.getLife(), mapParam, null).get("result");
+    }
+
+    private SimpleCity getCity(HttpServletRequest request){
+        String[] ipRegion = ipUtil.getIPRegion(request);
+        SimpleCity ipOne = simpleCityMapper.getIpOne(ipRegion[0], ipRegion[1], ipRegion[2]);
+        if (ipOne == null) {
+            throw new BizException("1002", "不支持该ip归属城市");
+        }
+        return ipOne;
+    }
 }
+

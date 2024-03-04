@@ -40,4 +40,9 @@ public class SimpleWeatherController {
         return R.ok(simpleWeatherService.getWeather(request,cityId));
     }
 
+    //获取生活指数
+    @GetMapping("/getLifeIndex")
+    public R<Object> getLifeIndex(HttpServletRequest request, @RequestParam(required = false) Integer cityId) {
+        return R.ok(simpleWeatherService.getLifeIndex(request,cityId));
+    }
 }

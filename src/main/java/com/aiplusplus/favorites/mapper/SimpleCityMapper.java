@@ -14,5 +14,5 @@ import org.apache.ibatis.annotations.Param;
  */
 @Mapper
 public interface SimpleCityMapper extends BaseMapper<SimpleCity> {
-    SimpleCity getIpOne(@Param("province") String province, @Param("city") String city);
+    SimpleCity getIpOne(@Param("province") String province, @Param("city") String city,@Param("district") String district);
 }

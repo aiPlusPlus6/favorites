@@ -2,7 +2,6 @@ package com.aiplusplus.favorites.web;
 
 import com.aiplusplus.favorites.common.R;
 import com.aiplusplus.favorites.unit.IpUtil;
-import com.jthinking.common.util.ip.IPInfoUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +23,8 @@ public class TestController {
     @GetMapping("/test")
     public R test(HttpServletRequest request) {
         String ipAddress = IpUtil.getIPAddress(request);
-        return R.ok(IPInfoUtils.getIpInfo(ipAddress));
+        ipAddress = "240e:45c:1e00:9c7:c488:50ff:fe31:85c7";
+        return R.ok(ipAddress);
     }
 
     @GetMapping("/test2")

@@ -17,4 +17,5 @@ public interface SimpleWeatherService {
 
     void pullWeatherTypeList();
 
+    Object getLifeIndex(HttpServletRequest request, Integer cityId);
 }
