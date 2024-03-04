@@ -1,11 +1,9 @@
 package com.aiplusplus.favorites.web;
 
 import com.aiplusplus.favorites.common.R;
-import io.minio.MinioClient;
-import io.minio.ObjectWriteResponse;
-import io.minio.PutObjectArgs;
-import io.minio.RemoveObjectArgs;
+import io.minio.*;
 import io.minio.errors.MinioException;
+import io.minio.http.Method;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
+import java.time.Duration;
 
 /**
  * @author 李俊杰
@@ -60,5 +59,16 @@ public class MinioFileController {
                         .build()
         );
         return R.ok("删除成功");
+    }
+
+    //获取预览地址
+    @GetMapping("/preview/{fileName}")
+    public R<String> previewFile(@PathVariable String fileName) throws Exception{
+        int duration = 60*4;
+        String presignedUrl = minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder() .method(Method.GET)
+                .bucket(bucketName)
+                .object(fileName)
+                .expiry(duration).build());
+        return R.ok(presignedUrl);
     }
 }
