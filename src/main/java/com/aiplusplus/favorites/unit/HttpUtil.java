@@ -1,6 +1,6 @@
 package com.aiplusplus.favorites.unit;
 
-import afu.org.checkerframework.checker.oigj.qual.O;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.client.RestTemplate;
