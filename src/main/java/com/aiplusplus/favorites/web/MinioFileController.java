@@ -11,8 +11,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
-import java.time.Duration;
+
+import java.util.UUID;
+
 
 /**
  * @author 李俊杰
@@ -36,7 +37,8 @@ public class MinioFileController {
     @PostMapping("/upload")
     public R<String> uploadFile(MultipartFile file) throws Exception{
         // 获取文件名和内容类型
-        String fileName = file.getOriginalFilename();
+        String fileName = UUID.randomUUID().toString().replace("-", "") + file.getOriginalFilename();
+        //uuid重新设置文件名
         String contentType = file.getContentType();
             // 使用minioClient上传文件
         ObjectWriteResponse objectWriteResponse = minioClient.putObject(
