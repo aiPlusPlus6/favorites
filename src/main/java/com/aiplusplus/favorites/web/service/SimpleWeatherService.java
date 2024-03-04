@@ -1,7 +1,11 @@
 package com.aiplusplus.favorites.web.service;
 
 import com.aiplusplus.favorites.doman.dto.simple.weather.WeatherDTO;
+import com.aiplusplus.favorites.doman.entity.simple.SimpleCity;
+import com.aiplusplus.favorites.doman.entity.simple.SimpleCityUser;
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.List;
 
 /**
  * @author 李俊杰
@@ -18,4 +22,12 @@ public interface SimpleWeatherService {
     void pullWeatherTypeList();
 
     Object getLifeIndex(HttpServletRequest request, Integer cityId);
+
+    void saveCity(Long id);
+
+    List<SimpleCityUser> selectCityUserList();
+
+    void deleteCityUser(Long id);
+
+    List<SimpleCity> selectCityList(String name);
 }

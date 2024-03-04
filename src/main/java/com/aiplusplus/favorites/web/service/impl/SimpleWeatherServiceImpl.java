@@ -6,9 +6,13 @@ import com.aiplusplus.favorites.doman.dto.simple.SimpleCityReceiveDTO;
 import com.aiplusplus.favorites.doman.dto.simple.weather.FutureDTO;
 import com.aiplusplus.favorites.doman.dto.simple.weather.WeatherDTO;
 import com.aiplusplus.favorites.doman.dto.simple.weather.WidBean;
+import com.aiplusplus.favorites.doman.entity.SysUser;
 import com.aiplusplus.favorites.doman.entity.simple.SimpleCity;
+import com.aiplusplus.favorites.doman.entity.simple.SimpleCityUser;
 import com.aiplusplus.favorites.doman.entity.simple.SimpleWid;
 import com.aiplusplus.favorites.mapper.SimpleCityMapper;
+import com.aiplusplus.favorites.mapper.SimpleCityUserMapper;
+import com.aiplusplus.favorites.security.SecurityUtils;
 import com.aiplusplus.favorites.unit.HttpUtil;
 import com.aiplusplus.favorites.unit.IpUtil;
 import com.aiplusplus.favorites.web.service.SimpleCityService;
@@ -45,6 +49,7 @@ public class SimpleWeatherServiceImpl implements SimpleWeatherService {
     private final SimpleCityMapper simpleCityMapper;
     private final SimpleWidService simpleWidService;
     private final IpUtil ipUtil;
+    private final SimpleCityUserMapper simpleCityUserMapper;
 
     //定时拉取城市列表每天凌晨0点
     @Scheduled(cron = "0 0 0 * * ?")
@@ -189,6 +194,46 @@ public class SimpleWeatherServiceImpl implements SimpleWeatherService {
         mapParam.put("key", simpleWeatherPrefix.getApikey());
         mapParam.put("city", String.valueOf(cityId!=null?cityId:simpleCity.getSimpleCityId()));
         return HttpUtil.getMapObject(simpleWeatherPrefix.getLife(), mapParam, null).get("result");
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveCity(Long id) {
+        SysUser currentUsername = SecurityUtils.getCurrentUsername();
+        SimpleCityUser simpleCityUser = simpleCityUserMapper.selectOne(new LambdaQueryWrapper<SimpleCityUser>().eq(SimpleCityUser::getSimpleCityId, id).eq(SimpleCityUser::getCreateBy, currentUsername.getId()));
+        if (simpleCityUser != null) {
+            throw new BizException("已经保存过该城市");
+        }
+        simpleCityUser = new SimpleCityUser();
+        simpleCityUser.setSimpleCityId(id);
+        int insert = simpleCityUserMapper.insert(simpleCityUser);
+        if (insert != 1) {
+            throw new BizException("保存失败");
+        }
+    }
+
+    @Override
+    public List<SimpleCityUser> selectCityUserList() {
+        SysUser currentUsername = SecurityUtils.getCurrentUsername();
+        return simpleCityUserMapper.selectList(new LambdaQueryWrapper<SimpleCityUser>().eq(SimpleCityUser::getCreateBy, currentUsername.getId()).orderByDesc(SimpleCityUser::getCreateDate));
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteCityUser(Long id) {
+        SysUser currentUsername = SecurityUtils.getCurrentUsername();
+        int delete = simpleCityUserMapper.delete(new LambdaQueryWrapper<SimpleCityUser>().eq(SimpleCityUser::getSimpleCityId, id).eq(SimpleCityUser::getCreateBy, currentUsername.getId()));
+        if (delete != 1) {
+            throw new BizException("删除失败");
+        }
+    }
+
+    @Override
+    public List<SimpleCity> selectCityList(String name) {
+        if(name ==null||name.isEmpty()){
+            return simpleCityMapper.selectList(new LambdaQueryWrapper<SimpleCity>().orderByAsc(SimpleCity::getProvince, SimpleCity::getCity, SimpleCity::getDistrict));
+        }
+        return simpleCityMapper.selectList(new LambdaQueryWrapper<SimpleCity>().like(SimpleCity::getCity, name).like(SimpleCity::getDistrict, name).like(SimpleCity::getProvince, name).orderByAsc(SimpleCity::getProvince, SimpleCity::getCity, SimpleCity::getDistrict));
     }
 
     private SimpleCity getCity(HttpServletRequest request){
