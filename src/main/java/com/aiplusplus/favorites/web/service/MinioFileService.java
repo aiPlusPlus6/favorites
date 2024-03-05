@@ -5,6 +5,8 @@ import com.aiplusplus.favorites.doman.enums.FileType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 /**
  * @author 李俊杰
  * {@code @date} 2024年03月05日 9:55
@@ -28,6 +30,12 @@ public interface MinioFileService {
      * @param fileName 系统文件名
      */
     void deleteFile(String fileName) throws Exception;
+
+    /**
+     * 批量删除文件
+     * @param fileNames 系统文件名
+     */
+    void deleteFiles(List<String> fileNames) throws Exception;
     //预览
 
     /**

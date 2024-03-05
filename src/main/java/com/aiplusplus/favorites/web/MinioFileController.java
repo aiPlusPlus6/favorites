@@ -35,7 +35,7 @@ public class MinioFileController {
 
     //文件上传
     @PostMapping("/upload")
-    public R<String> uploadFile(MultipartFile file) throws Exception{
+    public R<String> uploadFile(@RequestParam("file")MultipartFile file) throws Exception{
         return R.ok(minioFileService.uploadFile(file));
     }
     //删除文件

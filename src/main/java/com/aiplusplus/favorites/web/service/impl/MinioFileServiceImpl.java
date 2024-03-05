@@ -5,13 +5,17 @@ import com.aiplusplus.favorites.doman.enums.FileType;
 import com.aiplusplus.favorites.web.service.MinioFileService;
 import io.minio.*;
 import io.minio.http.Method;
+import io.minio.messages.DeleteError;
+import io.minio.messages.DeleteObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author 李俊杰
@@ -47,12 +51,35 @@ public class MinioFileServiceImpl implements MinioFileService {
 
     @Override
     public void deleteFile(String fileName) throws Exception {
+        //校验是否存在
+        minioClient.statObject(
+                StatObjectArgs.builder()
+                        .bucket(bucketName)
+                        .object(fileName)
+                        .build());
+        //删除
         minioClient.removeObject(
                 RemoveObjectArgs.builder()
                         .bucket(bucketName)
                         .object(fileName)
                         .build()
         );
+    }
+
+    @Override
+    public void deleteFiles(List<String> fileNames) throws Exception {
+        List<DeleteObject> objectsToDelete = fileNames.stream()
+                .map(DeleteObject::new)
+                .collect(Collectors.toList());
+        Iterable<Result<DeleteError>> results = minioClient.removeObjects(
+                RemoveObjectsArgs.builder()
+                        .bucket(bucketName)
+                        .objects(objectsToDelete)
+                        .build());
+        for (Result<DeleteError> result : results) {
+            DeleteError error = result.get();
+            log.error("Error in deleting object " + error.objectName() + "; " + error.message());
+        }
     }
 
     @Override
