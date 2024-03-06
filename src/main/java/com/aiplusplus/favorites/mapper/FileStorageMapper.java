@@ -3,6 +3,9 @@ package com.aiplusplus.favorites.mapper;
 import com.aiplusplus.favorites.doman.entity.file.FileStorage;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @author 李俊杰
@@ -13,4 +16,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface FileStorageMapper extends BaseMapper<FileStorage> {
+    Integer reallyDelete(@Param("idList") List<String> idList);
 }

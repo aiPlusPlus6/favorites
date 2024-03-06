@@ -19,4 +19,6 @@ import java.util.List;
 public interface FolderMapper extends BaseMapper<Folder> {
 
     List<FolderVO> selectFolderList(@Param("id") Long id);
+
+    Integer reallyDelete(@Param("deleteFolderId") List<String> deleteFolderId);
 }

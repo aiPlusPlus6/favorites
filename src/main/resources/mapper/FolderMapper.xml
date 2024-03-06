@@ -1,25 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.aiplusplus.favorites.mapper.FolderMapper">
-<!--    @Schema(description = "文件id")-->
-<!--    private Long id;-->
-<!--    @Schema(description = "原文件名")-->
-<!--    private String originalFileName;-->
-<!--    @Schema(description = "系统文件名")-->
-<!--    private String systemFileName;-->
-<!--    @Schema(description = "文件夹id")-->
-<!--    private Long folderId;-->
-<!--    @Schema(description = "文件类型")-->
-<!--    private FileType fileType;-->
-<!--    @Schema(description = "文件大小(Mb)")-->
-<!--    private BigDecimal fileSize;-->
-<!--    @Schema(description = "版本号")-->
-<!--    private Integer version;-->
     <resultMap id="selectFolderListMap" type="com.aiplusplus.favorites.doman.vo.file.FolderVO">
         <id column="id" property="id"/>
         <result column="folder_name" property="folderName"/>
         <result column="parent_folder_id" property="parentFolderId"/>
         <result column="Fversion" property="version"/>
+        <result column="folderSize" property="folderSize"/>
         <collection property="fileStorageVOList" ofType="com.aiplusplus.favorites.doman.vo.file.FileStorageVO">
             <id column="fid" property="id"/>
             <result column="file_type" property="fileType"/>
@@ -32,18 +19,25 @@
     </resultMap>
     <select id="selectFolderList" resultMap="selectFolderListMap">
         select f.id,
-                f.folder_name,
-                f.parent_folder_id,
-                f.version as Fversion,
-                fs.id as fid,
-                fs.file_type,
-                fs.file_size,
-                fs.original_file_name,
-                fs.system_file_name,
-                fs.folder_id,
-                fs.version as fversion
+               f.folder_name,
+               f.parent_folder_id,
+               0 as folderSize,
+               f.version  as Fversion,
+               fs.id      as fid,
+               fs.file_type,
+               fs.file_size,
+               fs.original_file_name,
+               fs.system_file_name,
+               fs.folder_id,
+               fs.version as fversion
         from folder f
                  left join file_storage fs on f.id = fs.folder_id
         where f.create_by = #{userId}
     </select>
+    <delete id="reallyDelete" parameterType="java.lang.Integer">
+        delete from folder where id in
+        <foreach collection="deleteFolderId" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
 </mapper>

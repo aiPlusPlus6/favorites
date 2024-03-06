@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 @Schema(name = "文件存储VO")
 public class FileStorageVO {
     @Schema(description = "文件id")
-    private Long id;
+    private String id;
     @Schema(description = "原文件名")
     private String originalFileName;
     @Schema(description = "系统文件名")
