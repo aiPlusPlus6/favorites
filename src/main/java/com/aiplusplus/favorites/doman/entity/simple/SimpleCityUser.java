@@ -1,9 +1,6 @@
 package com.aiplusplus.favorites.doman.entity.simple;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -17,6 +14,7 @@ import java.time.LocalDateTime;
  * @Description: TODO(描述)
  */
 @Data
+@TableName("simple_city_user")
 @Schema(name = "天气支持城市用户表")
 public class SimpleCityUser {
     @Schema(name = "id")

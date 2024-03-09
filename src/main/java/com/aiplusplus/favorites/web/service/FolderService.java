@@ -1,6 +1,7 @@
 package com.aiplusplus.favorites.web.service;
 
 import com.aiplusplus.favorites.doman.dto.file.FolderAddDTO;
+import com.aiplusplus.favorites.doman.dto.file.FolderUpdateDTO;
 import com.aiplusplus.favorites.doman.entity.file.Folder;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -15,4 +16,6 @@ public interface FolderService extends IService<Folder> {
     void addFolder(FolderAddDTO folderAddDTO);
 
     void deleteFolder(Long folderId, Integer version);
+
+    void updateFolder(FolderUpdateDTO folderUpdateDTO);
 }

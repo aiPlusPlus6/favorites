@@ -1,6 +1,7 @@
 package com.aiplusplus.favorites.doman.entity.file;
 
 import com.aiplusplus.favorites.doman.entity.base.BaseEntity;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -12,6 +13,7 @@ import lombok.Data;
  * @Description: TODO(描述)
  */
 @Data
+@TableName("folder")
 @Schema(name = "文件夹表")
 public class Folder extends BaseEntity {
     @Schema(description = "文件夹名")

@@ -2,6 +2,7 @@ package com.aiplusplus.favorites.doman.entity;
 
 import com.aiplusplus.favorites.doman.entity.base.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,6 +20,7 @@ import java.util.List;
  * @Description: TODO(描述)
  */
 @Data
+@TableName("sys_user")
 @Schema(name = "系统用户实体类")
 public class SysUser extends BaseEntity implements UserDetails {
     @Schema(name = "用户名")

@@ -1,6 +1,7 @@
 package com.aiplusplus.favorites.doman.entity.simple;
 
 import com.aiplusplus.favorites.doman.entity.base.DateEntity;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -12,6 +13,7 @@ import lombok.Data;
  * @Description: TODO(天气支持城市表)
  */
 @Data
+@TableName("simple_city")
 @Schema(name = "天气支持城市表")
 public class SimpleCity extends DateEntity {
     @Schema(name = "天气城市id")

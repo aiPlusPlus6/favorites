@@ -2,6 +2,7 @@ package com.aiplusplus.favorites.web.service.impl;
 
 import com.aiplusplus.favorites.common.customizeException.BizException;
 import com.aiplusplus.favorites.doman.dto.file.FolderAddDTO;
+import com.aiplusplus.favorites.doman.dto.file.FolderUpdateDTO;
 import com.aiplusplus.favorites.doman.entity.SysUser;
 import com.aiplusplus.favorites.doman.entity.file.Folder;
 import com.aiplusplus.favorites.doman.vo.file.FileStorageVO;
@@ -21,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -113,6 +113,11 @@ public class FolderServiceImpl extends ServiceImpl<FolderMapper, Folder> impleme
         if(reallyDelete != deleteFolderId.size()){
             throw new BizException("删除文件夹失败");
         }
+    }
+
+    @Override
+    public void updateFolder(FolderUpdateDTO folderUpdateDTO) {
+
     }
 
     private List<FolderVO> dfs(Map<String,List<FolderVO>> folderVOListMap,  String folderId){

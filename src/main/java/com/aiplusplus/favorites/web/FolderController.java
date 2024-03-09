@@ -2,10 +2,12 @@ package com.aiplusplus.favorites.web;
 
 import com.aiplusplus.favorites.common.R;
 import com.aiplusplus.favorites.doman.dto.file.FolderAddDTO;
+import com.aiplusplus.favorites.doman.dto.file.FolderUpdateDTO;
 import com.aiplusplus.favorites.web.service.FolderService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.parameters.P;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -35,5 +37,10 @@ public class FolderController {
         return R.ok("删除成功");
     }
     //修改文件夹
+    @PostMapping("/update")
+    public R<String> updateFolder(@RequestBody @Validated FolderUpdateDTO folderUpdateDTO) {
+        folderService.updateFolder(folderUpdateDTO);
+        return R.ok("修改成功");
+    }
     //查询文件夹
 }

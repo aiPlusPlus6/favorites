@@ -1,6 +1,7 @@
 package com.aiplusplus.favorites.doman.entity;
 
 import com.aiplusplus.favorites.doman.entity.base.BaseEntity;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -13,6 +14,7 @@ import lombok.Data;
  */
 @Data
 @Schema(name = "系统角色实体类")
+@TableName("sys_role")
 public class SysRole extends BaseEntity {
     @Schema(name = "角色名称")
     private String roleName;
